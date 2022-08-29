@@ -1,0 +1,107 @@
+\documentclass[a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+
+%%% PACCHETTI
+\usepackage{geometry}
+\usepackage{mathtools,amsfonts,amssymb}
+\usepackage{amsthm}
+\usepackage{bm} % Permette di mettere in grassetto anche i simboli matematici (lettere greche)
+\usepackage{soul} % Aggiunge diverse tipologie di sottolineature
+\usepackage{graphicx} % Permette di inserire immagini
+\usepackage{listings} % Spazio per i codici
+\usepackage{hyperref} % Permette di creare link sul pdf
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=blue,
+	pdftitle={Overleaf Example},
+	pdfpagemode=FullScreen,
+}
+
+%%% COMANDI
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\theoremstyle{definition}
+\newtheorem{definizione}{Definizione}
+\newtheorem{esempio}{Esempio}
+\theoremstyle{plain}
+\newtheorem{teorema}{Teorema}
+\theoremstyle{remark}
+\newtheorem{osservazione}{Osservazione}
+\newtheorem{sol}{Solution}
+
+\geometry{a4paper, top=3cm, bottom=3cm, left=3.5cm, right=3.5cm, heightrounded, bindingoffset=5mm}
+
+
+
+\begin{document}
+	\title{\textbf{Problema esterno di Dirichlet} \\ Metodo degli Elementi di Contorno}
+	\author{Alice Daldossi, \# Matricola 510972\\ Universit\`a di Pavia\\ \\ \textit{Relazione del corso} \\ \textit{Metodi Numerici Avanzati per le Equazioni alle Derivate Parziali}}
+	\date{}
+	% Dipartimento di Matematica, Università di Pavia
+	\maketitle
+	
+%	\begin{abstract}
+%		%		Esso si basa sulla risoluzione di un’equazione integrale definita sul contorno invece che sulla risoluzione diretta delle equazioni differenziali parziali come invece avviene nel metodo FEM. A parità di livello di discretizzazione tale metodo comporta una maggiore precisione rispetto a questi ultimi (Jing, 2003).
+
+%		The BEM has significant advantages over the FEM as there is no need for discretizing the domain under consideration into the elements, and this method only requires the boundary data as inputs. Therefore the meshing effort is limited, and the system matrices are smaller. However, the BEM also has disadvantages over the FEM; the BEM matrices are fully populated, with complex and frequency-dependent coefficients, which deteriorate the efficiency of the solution. Furthermore, singularities may arise in the solution, and these must be prevented [6].
+
+%		The governing equation for linear time-harmonic acoustic wave problems is the Helmholtz equation, which has been solved by using the BIE and BEM for at least five decades. 
+%	\end{abstract}
+	
+	\section*{Introduzione}
+	{ 
+	Tanto in campo medico quanto in campo industriale risulta importante saper creare modelli della propagazione delle onde acustiche, ad esempio per terapie non invasive oppure comunicazione subacquea, imaging a ultrasuoni oppure contenimento acustico. \\
+	Sia la pressione acustica $p_\approx$, la densità $\rho_\approx$, la velocità potenziale $\phi$ che le componenti della velocità $v_{\approx,j}$ soddisfano la stessa equazione delle onde, che allora si può generalizzare per un qualsiasi campo scalare $U$:
+	\begin{equation*}
+		\frac{1}{c^2} \frac{\partial^2 U}{\partial t^2} - \Delta U = 0.
+	\end{equation*}
+	In questa relazione sono interessata a cercare le soluzioni armoniche in tempo, quindi quelle del tipo
+	\begin{equation*}
+		U(\textbf{x},t) = \Re \{ u(\textbf{x}) e^{-i \omega t} \},
+	\end{equation*}
+	con $\omega>0$ frequenza temporale e $u$ campo a valori complessi dipendente dalla posizione in spazio $\textbf{x}$ ma non dalla variabile temporale $t$. 
+	Per la risoluzione di questo problema ci si riconduce all'equazione di Helmholtz
+	\begin{equation*}
+		\Delta u + k^2 u = 0.
+	\end{equation*}
+	Infatti vale che, se $U(\textbf{x},t)$ è una soluzione armonica in tempo dell'equazione delle onde, allora $u(\textbf{x})$ è una soluzione dell'equazione di Helmholtz con numero d'onda $k:=\frac{\omega}{c}>0$. Questo significa che l'equazione di Helmholtz descrive tutte le soluzioni armoniche in tempo dell'equazione delle onde.\\
+	
+	L'equazione di Helmholtz viene risolta introducendo un'equazione integrale al contorno, ovvero \textit{boundary integral equation} (BIE), a cui viene applicato il Metodo degli Elementi di Contorno, ovvero \textit{Boundary Element Method} (BEM). La peculiarità di questo metodo numerico sta nel fatto che richiede la discretizzazione del dominio della soluzione solo ai bordi, ciò riduce le dimensioni del problema e semplifica i dati richiesti in ingresso. \\
+	In particolare mi concentrerò sulla seguente classe di problemi al valore al bordo.
+	\begin{definizione}
+		\textbf{Problema di Dirichlet esterno - EDP.} Sia $\Omega_{-}$ un dominio aperto, Lipschitz e limitato, $\Gamma$ il suo bordo e $\Omega_+$ il suo complementare aperto. Siano poi $k>0$ un parametro e $g_D \in H^{\frac{1}{2}}(\Gamma)$. Diciamo che $u \in H^1_{\text{loc}}(\overline{\Omega_{+}})$ soddisfa il problema Dirichlet-Helmholtz esterno se
+		\begin{equation}
+			\begin{cases}
+				\Delta u + k^2 u = 0 \quad \text{in} \ \Omega_+,\\
+				\gamma^+ u = g_D \quad \text{su} \ \Gamma\\
+				u \ \text{è radiativa}.
+			\end{cases}
+		\end{equation}
+	\end{definizione}
+	Nelle prima sezione è spiegata la mia implementazione in Matlab del Metodo degli Elementi di Contorno nel caso di dominio liscio (triangolare, quadrato, a "U" rovesciata, ad angolo retto, a doppio triangolo) e funzioni base dello spazio $H^{-\frac{1}{2}}(\Gamma)$ prese lineari a tratti. Inizio trattando alcuni possibili metodi di discretizzazione del bordo: uniforme e adattivo. Successivamente individuo una soluzione approssimata dell'equazione integrale al contorno considerata, usando il metodo di Galerkin e quello di collocazione, e poi entrambi i metodi vengono adattati nel caso in cui si vuole operare una \textit{singularity extraction}. Ho concluso con uno studio degli errori in base alla scelta del metodo di discretizzazione oppure alla presenza o meno della \textit{singularity extraction}.
+	}
+
+	\tableofcontents
+	
+%	\section{Soluzioni particolari dell'equazione di Helmholtz}
+%	\input{CAP1}
+	
+%	\section{Problemi di valori al bordo per l'equazione di Helmholtz}
+%	\input{CAP2}
+	
+	\section{BEM per BIE}
+	\input{BEM}
+	
+%	\section{Boundary value problems in bounded domains}
+%	\input{CAP3}
+%	
+%	\section{Exterior boundary value problems}
+%	\input{CAP4}
+	
+\end{document}
