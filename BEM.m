@@ -1,7 +1,19 @@
-% Risolvo l'eq id Helmholtz tramite il BEM
 function [u_scat] = BEM(X, Y, ver, i_pol, k, h, z, theta, disc,method,singex,plt)
-% INPUT
-% OUTPUT
+% Risolvo l'eq id Helmholtz tramite il BEM con metodo di discretizzazione
+% e metodo di risoluzione del BIE come indicato in input
+% INPUT: X,Y: griglia di valutazione
+%        ver: vertici dei poligoni (numeri complessi)
+%        i_pol: indici dei vertici di fine e di inizio dei poligoni
+%        k: parametro dell'equazione di Helmholtz
+%        h: ampiezza della mesh
+%        z: parametro del metodo di discretizzazione adattivo
+%        theta: angolo dell'onda incidente
+%        disc: stringa che indica il metodo di discretizzazione
+%        method: stringa che indica il metodo di risoluzione del BIE ('collocation', 'galerkin')
+%        singex: stringa che indica la presenza o meno della singularity ('singex', 
+% 'nosingex') extraction
+%        plt: stringa che indica se plottare ('plot')
+% OUTPUT u_scat: onda scatterata valutata su X+Yi
 
 %% PARAMETRI
 PWave = @(x) -exp(1i*k*(real(x)*cos(theta)+imag(x)*sin(theta))); % u_inc = onda piana
