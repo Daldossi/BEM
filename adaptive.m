@@ -1,7 +1,7 @@
 function [pt,n] = adaptive(a,b,n,z)
 % Individua i punti su ogni metà del lato che inizia in a e finisce in b
 % INPUT: a: vertice di inizio del lato l_i
-%        b: vertice di ifne del lato l_i
+%        b: vertice di fine del lato l_i
 %        n: numero dei punti su l_i per una mesh uniforme
 %        z: parametro del metodo adattivo
 % OUTPUT: pt: punti adattivi
@@ -11,8 +11,8 @@ if  mod(n,2) == 1               % se il numero n di punti è pari,
 end
 pt = zeros(2*n,1);              % inizializzo l'output
 x_m = 0.5 * (a+b);              % pt medio del lato 
-alpha = (x_m-a);                % definisco i parametri
-beta = (x_m-b);
+alpha = x_m-a;                  % definisco i parametri
+beta = x_m-b;
 for i = 1:n+1 
     x = (i/(n+1))^z;            % prendo il pt nell'intervallo [0,1)
     % fisso il pt della discretizzazione nella prima metà del lato
