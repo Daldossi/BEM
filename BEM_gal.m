@@ -1,5 +1,6 @@
 function [u_scat,psi] = BEM_gal(PT,POL,k,g_D,x_val,flag)
-% Metodo Galerkin
+% Risolve BIE con il metodo Galerkin e poi ricava il valore di u_scat
+% tramite ScatteredWave.m
 % INPUT: PT: pti della mesh (complessi)
 %        POL: indici dei vertici di inizio e fine di ogni poligono
 %        k: parametro dell'equazione di Helmholtz

@@ -1,5 +1,6 @@
-function [u_scat] = BEM_col(PT,POL,k,g_D,x_val,flag)
-% Metodo collocazione
+function [u_scat,psi] = BEM_col(PT,POL,k,g_D,x_val,flag)
+% Risolve BIE con il metodo collocazione e poi ricava il valore di u_scat
+% tramite ScatteredWave.m
 % INPUT: PT: pti della mesh (complessi)
 %        POL: indici dei vertici di inizio e fine di ogni poligono
 %        k: parametro dell'equazione di Helmholtz
@@ -34,11 +35,11 @@ for j = 1:n_POL                                      % ciclo sui poligoni
         A_pol = (1i/4)*(len').*A_pol;
         % DIAGONALE
         if i == j
-            if strcmp(flag,'se')            % con singularity extraction
+            if strcmp(flag,'se')                     % con singularity extraction
                 A_pol(1:(n_PTi+1):n_PTi^2) = (len./(2*pi)).*( (pi*1i)/2 - log(k/2) - eulergamma - log(len./2) + 1 );
-            else strcmp(flag,'no')          % senza singularity extraction
-                n_diag = 10;                              % numero nodi di quadratura
-                [x_diag,w_diag] = gaussquad(n_diag);      % nodi e pesi di quadratura
+            elseif strcmp(flag,'no')                 % senza singularity extraction
+                n_diag = 10;                         % numero nodi di quadratura
+                [x_diag,w_diag] = gaussquad(n_diag); % nodi e pesi di quadratura
                 A_pol(1:(n_PTi+1):n_PTi^2) = sum( (len./2).*(1i/2).*besselh(0, 1, k.*(x_diag.').*(len./2)).*(w_diag.'),2 );
             end
         end

@@ -5,7 +5,7 @@ function [u_scat] = ScatteredWave(PT,POL,x_val,psi,k)
 %        x_val: matrice (griglia) dei pti (22500) su cui valutare u_scat, 
 %        psi: coefficienti (densità),
 %        k: parametro dell'equazione di Helmholtz
-% OUTPUT: u_scat: matrice delle valutazioni dell'onda scat in x_val
+% OUTPUT: u_scat: matrice delle valutazioni dell'onda scatterata in x_val
 
 n_pol = size(POL,1);                % numero totale di poligoni
 u_scat = 0;                         % inizializzazione
