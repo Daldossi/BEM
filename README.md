@@ -5,4 +5,5 @@ Basic codes in Matlab for BEM
 3. Calculate the scattered wave in the domain (ScatteredWave.m).
 4. Plot the solution with different domains but taking always a plane wave as the incident one (solution.m). The method to define the boundary elements and the one to find the density is to be selected using BEM.m.
 5. Calculate the error between the approximated scattered wave of the BEM and the exact one (Error.m). Plot the convergence comparing uniform and adaptive discretizations, singularity extraction and non-singularity extraction methods (Error_test.m).
+
 Report: Report_Daldossi.pdf
