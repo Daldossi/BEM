@@ -7,6 +7,7 @@
 \usepackage{geometry}
 \usepackage{mathtools,amsfonts,amssymb}
 \usepackage{amsthm}
+\usepackage{amsmath}
 \usepackage{bm} % Permette di mettere in grassetto anche i simboli matematici (lettere greche)
 \usepackage{soul} % Aggiunge diverse tipologie di sottolineature
 \usepackage{graphicx} % Permette di inserire immagini
@@ -56,12 +57,12 @@
 	
 	\section*{Introduzione}
 	{ 
-	Tanto in campo medico quanto in campo industriale risulta importante saper creare modelli della propagazione delle onde acustiche, ad esempio per terapie non invasive oppure comunicazione subacquea, imaging a ultrasuoni oppure contenimento acustico. \\
-	Sia la pressione acustica $p_\approx$, la densità $\rho_\approx$, la velocità potenziale $\phi$ che le componenti della velocità $v_{\approx,j}$ soddisfano la stessa equazione delle onde, che allora si può generalizzare per un qualsiasi campo scalare $U$:
+	Tanto in campo medico quanto in campo industriale risulta importante creare modelli della propagazione delle onde acustiche, ad esempio per terapie non invasive oppure comunicazione subacquea, imaging a ultrasuoni oppure contenimento acustico. \\
+	Sia la pressione acustica $p_\approx$, la densità $\rho_\approx$ del mezzo in cui l'onda si propaga, la velocità potenziale $\phi$ che le componenti della velocità $v_{\approx,j}$ soddisfano la stessa equazione delle onde, che allora si può generalizzare per un qualsiasi campo scalare $U$:
 	\begin{equation*}
 		\frac{1}{c^2} \frac{\partial^2 U}{\partial t^2} - \Delta U = 0.
 	\end{equation*}
-	In questa relazione sono interessata a cercare le soluzioni armoniche in tempo, quindi quelle del tipo
+	In questa relazione sono interessata a cercare le soluzioni armoniche nel tempo, quindi quelle del tipo
 	\begin{equation*}
 		U(\textbf{x},t) = \Re \{ u(\textbf{x}) e^{-i \omega t} \},
 	\end{equation*}
@@ -70,9 +71,9 @@
 	\begin{equation*}
 		\Delta u + k^2 u = 0.
 	\end{equation*}
-	Infatti vale che, se $U(\textbf{x},t)$ è una soluzione armonica in tempo dell'equazione delle onde, allora $u(\textbf{x})$ è una soluzione dell'equazione di Helmholtz con numero d'onda $k:=\frac{\omega}{c}>0$. Questo significa che l'equazione di Helmholtz descrive tutte le soluzioni armoniche in tempo dell'equazione delle onde.\\
+	Infatti vale che, se $U(\textbf{x},t)$ è una soluzione armonica in tempo dell'equazione delle onde, allora $u(\textbf{x})$ è una soluzione dell'equazione di Helmholtz con numero d'onda $k:=\frac{\omega}{c}>0$. Questo implica che l'equazione di Helmholtz descrive tutte le soluzioni armoniche in tempo dell'equazione delle onde.\\
 	
-	L'equazione di Helmholtz viene risolta introducendo un'equazione integrale al contorno, ovvero \textit{boundary integral equation} (BIE), a cui viene applicato il Metodo degli Elementi di Contorno, ovvero \textit{Boundary Element Method} (BEM). La peculiarità di questo metodo numerico sta nel fatto che richiede la discretizzazione del dominio della soluzione solo ai bordi, ciò riduce le dimensioni del problema e semplifica i dati richiesti in ingresso. \\
+	L'equazione di Helmholtz viene risolta introducendo un'equazione integrale al contorno, ovvero \textit{boundary integral equation} (BIE), a cui viene applicato il Metodo degli Elementi di Contorno, ovvero \textit{Boundary Element Method} (BEM). La peculiarità di questo metodo numerico sta nel fatto che richiede la discretizzazione del dominio solo ai bordi: ciò riduce le dimensioni del problema e semplifica i dati richiesti in ingresso. \\
 	In particolare mi concentrerò sulla seguente classe di problemi al valore al bordo.
 	\begin{definizione}
 		\textbf{Problema di Dirichlet esterno - EDP.} Sia $\Omega_{-}$ un dominio aperto, Lipschitz e limitato, $\Gamma$ il suo bordo e $\Omega_+$ il suo complementare aperto. Siano poi $k>0$ un parametro e $g_D \in H^{\frac{1}{2}}(\Gamma)$. Diciamo che $u \in H^1_{\text{loc}}(\overline{\Omega_{+}})$ soddisfa il problema Dirichlet-Helmholtz esterno se
@@ -84,7 +85,8 @@
 			\end{cases}
 		\end{equation}
 	\end{definizione}
-	Nelle prima sezione è spiegata la mia implementazione in Matlab del Metodo degli Elementi di Contorno nel caso di dominio liscio (triangolare, quadrato, a "U" rovesciata, ad angolo retto, a doppio triangolo) e funzioni base dello spazio $H^{-\frac{1}{2}}(\Gamma)$ prese lineari a tratti. Inizio trattando alcuni possibili metodi di discretizzazione del bordo: uniforme e adattivo. Successivamente individuo una soluzione approssimata dell'equazione integrale al contorno considerata, usando il metodo di Galerkin e quello di collocazione, e poi entrambi i metodi vengono adattati nel caso in cui si vuole operare una \textit{singularity extraction}. Ho concluso con uno studio degli errori in base alla scelta del metodo di discretizzazione oppure alla presenza o meno della \textit{singularity extraction}.
+	L'obiettivo di questa relazione è illustrare come ho implementato in Matlab il Metodo degli Elementi di Contorno nel caso di funzioni base dello spazio $H^{-\frac{1}{2}}(\Gamma)$ prese lineari a tratti. Inizio trattando alcuni possibili metodi di discretizzazione del bordo: uniforme e adattivo. Successivamente individuo una soluzione approssimata dell'equazione integrale al contorno considerata, usando il metodo di Galerkin e quello di collocazione; entrambi i metodi vengono poi adattati nel caso in cui si vuole operare una \textit{singularity extraction}. Quindi, ricavo i valori dell'onda cercata sul dominio. Ho concluso con uno studio degli errori in funzione della scelta del metodo di discretizzazione oppure della presenza o meno della \textit{singularity extraction}.\\
+	Tutti i codici si possono trovare al link \href{https://github.com/Daldossi/BEM}{https://github.com/Daldossi/BEM}.
 	}
 
 	\tableofcontents
